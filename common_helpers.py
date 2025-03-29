@@ -45,3 +45,16 @@ def run_noise_experiment(queries, testset, noise_metric, models, metrics):
         testset.get_qrels(),
         eval_metrics=metrics
     )
+
+def get_noise_label(row):
+    labels = []
+    if row["sub_prob"] > 0:
+        labels.append("Substitution")
+    if row["ins_prob"] > 0:
+        labels.append("Insertion")
+    if row["del_prob"] > 0:
+        labels.append("Deletion")
+
+    if len(labels) == 3:
+        return "Equal Mix"  # All three are present
+    return " + ".join(labels) if labels else "No Noise"
