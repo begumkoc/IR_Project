@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
+import pyterrier as pt
 
 def plot_metric(results: pd.DataFrame, metric: str, title: str, legend_title: str = ""):
     plt.figure(figsize=(10, 6))
@@ -34,3 +35,13 @@ def add_query_noise(queries: pd.DataFrame, noise_metric) -> pd.DataFrame:
     noisy_queries_df = pd.DataFrame(noisy_queries_list)
     noisy_queries_df["qid"] = noisy_queries_df["qid"].astype(str)
     return noisy_queries_df
+
+def run_noise_experiment(queries, testset, noise_metric, models, metrics):
+    noisy_queries_df = add_query_noise(queries, noise_metric)
+
+    return pt.Experiment(
+        models,
+        noisy_queries_df,
+        testset.get_qrels(),
+        eval_metrics=metrics
+    )
